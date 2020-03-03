@@ -174,6 +174,8 @@ void WumpusWorld::Initialize ()
 	{
 		currentPercept.Glitter = true;
 	}
+
+	visitedLocations.insert(currentState.agentLocation.X + currentState.agentLocation.Y * currentState.worldSize);
 }
 
 Percept& WumpusWorld::GetPercept()
@@ -253,7 +255,15 @@ void WumpusWorld::ExecuteAction (Action action)
 		// Check for death by wumpus
 		if (currentState.wumpusAlive && (currentState.agentLocation == currentState.wumpusLocation))
 		{
-			currentState.agentAlive = false;
+//			currentState.agentAlive = false;
+		}
+
+		if(currentState.agentAlive) {
+            visitedLocations.insert(
+                    currentState.agentLocation.X + currentState.agentLocation.Y * currentState.worldSize);
+        }
+        if(visitedLocations.size() + currentState.pitLocations.size() == currentState.worldSize * currentState.worldSize){
+            currentState.agentInCave = false;
 		}
 	}
 
@@ -373,6 +383,11 @@ int WumpusWorld::GetScore ()
 	}
 
 	return score;
+}
+
+int WumpusWorld::GetNumVisitedLocations()
+{
+    return visitedLocations.size();
 }
 
 void WumpusWorld::Print ()

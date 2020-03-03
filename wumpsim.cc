@@ -101,8 +101,11 @@ int main (int argc, char *argv[])
 	Percept percept;
 	Action action;
 	int score;
+	int numLocations;
 	int trialScore;
 	int totalScore = 0;
+	int trialNumLocations;
+	int totalNumLocations = 0;
 	float averageScore;
 	int numMoves;
 
@@ -121,6 +124,7 @@ int main (int argc, char *argv[])
 		agent = new Agent ();
 #endif
 		trialScore = 0;
+        trialNumLocations = 0;
 		for (int tries = 1; tries <= numTries; tries++)
 		{
 			wumpusWorld->Initialize();
@@ -139,18 +143,24 @@ int main (int argc, char *argv[])
 				numMoves++;
 			}
 			score = wumpusWorld->GetScore();
+			numLocations = wumpusWorld->GetNumVisitedLocations();
 			agent->GameOver (score);
 			trialScore = trialScore + score;
-			cout << "Trial " << trial << ", Try " << tries << " complete: Score = " << score << endl << endl;
+			trialNumLocations = trialNumLocations + numLocations;
+			cout << "Trial " << trial << ", Try " << tries << " complete: Score = " << score
+			     << ", number of locations = " << numLocations << endl << endl;
 		}
 		delete agent;
 		delete wumpusWorld;
 		averageScore = ((float) trialScore) / ((float) numTries);
-		cout << "Trial " << trial << " complete: Average score for trial = " << averageScore << endl << endl;
+		cout << "Trial " << trial << " complete: Average score for trial = " << averageScore
+		     << ", average number of locations = " << (float)trialNumLocations / numTries << endl << endl;
 		totalScore = totalScore + trialScore;
+		totalNumLocations = totalNumLocations + trialNumLocations;
 	}
 	averageScore = ((float) totalScore) / ((float) (numTrials * numTries));
-	cout << "All trials completed: Average score for all trials = " << averageScore << endl;
+	cout << "All trials completed: Average score for all trials = " << averageScore
+         << ", average number of locations for all trials = " << (float)totalNumLocations / (numTrials * numTries) << endl;
 	cout << "Thanks for playing!" << endl << endl;
 
 #ifdef PYTHON
